@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\signUpController;
+use App\Http\Controllers\loginController;
+use App\Http\Controllers\mailConfirmationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,5 +21,9 @@ use App\Http\Controllers\signUpController;
 //     return $request->user();
 // });
 
-Route::get('/sign-up',[signUpController::class,'signUp']);
+Route::post('/sign-up',[signUpController::class,'signUp'])->middleware('signUp');
+
+
+Route::get('/mail-confirmation/{email}/{varify_token}',[mailConfirmationController::class,'confirmed']);
+Route::post('/login',[loginController::class,'login'])->middleware('login');
 
