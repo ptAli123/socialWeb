@@ -10,12 +10,12 @@ use App\Mail\SendMail;
 class signUpController extends Controller
 {   
     function signUp(Request $request){
-        // $request->validate([
-        //     "name" => "required | string",
-        //     "email" => "required | Email",
-        //     "password" => "required | min:6",
-        //     "gender" => "required | string" 
-        // ]);
+        $request->validate([
+            "name" => "required | string",
+            "email" => "required | Email",
+            "password" => "required | min:6",
+            "gender" => "required | string" 
+        ]);
         $varify_token=rand(100,100000);
         $user = new User();
         $user->name = $request->name;

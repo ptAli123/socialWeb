@@ -16,10 +16,12 @@ class loginMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $request->validate([
-            "email" => "required | string",
-            "password" => "required | min:6"
-        ]);
-        //return $next($request);
+        $data = DB::table('users')->where('remember_token',$request->remember_token)->get();
+        if (count($data) > 0){
+            return $next($request);
+        }
+        else{
+            echo json_encode(['msg' => 'you are not login']);
+        }
     }
 }

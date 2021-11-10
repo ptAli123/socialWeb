@@ -11,27 +11,30 @@ use App\Models\User;
 
 class loginController extends Controller
 {
+    public $jwtToken;
     function jwtToken(){
         $key = "malik626";
         $payload = array(
             "iss" => "localhost",
             "aud" => time(),
             "iat" => now(),
-            "nbf" => 10
+            "nbf" => 3400000
         );
         $jwt = JWT::encode($payload, $key, 'HS256');
+        $this->jwtToken = $jwt;
         $token = array("remember_token"=>$jwt);
         echo json_encode($token);
     }
     function login(Request $request){
-        // $request->validate([
-        //     "email" => "required | string",
-        //     "password" => "required | min:6"
-        // ]);
+        $request->validate([
+            "email" => "required | string",
+            "password" => "required | min:6"
+        ]);
         $data = DB::table('users')->where('email',$request->email)->get();
         if (Hash::check($request->password, $data[0]->password)){
             //echo ["status"=>"you are Successfully Login"];
             $this->jwtToken();
+            DB::table('users')->where('email',$request->email)->update(['remember_token' => $this->jwtToken]);
         }
         else{
             return ["status"=>"your email and password is not Valid"];
