@@ -6,16 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail;
+use App\Http\Requests\signUpRequest;
 
 class signUpController extends Controller
 {   
-    function signUp(Request $request){
-        $request->validate([
-            "name" => "required | string",
-            "email" => "required | Email",
-            "password" => "required | min:6",
-            "gender" => "required | string" 
-        ]);
+    function signUp(signUpRequest $request){
+        
+        $request->validated();
         $varify_token=rand(100,100000);
         $user = new User();
         $user->name = $request->name;
@@ -30,7 +27,6 @@ class signUpController extends Controller
             'link' => 'http://127.0.0.1:8000/api/mail-confirmation/'.$request->email.'/'.$varify_token
         ];
         Mail::to($request->email)->send(new SendMail($details));
-        return "mail send....";
-
+        return response()->json(["msg"=>"mail send...."]); 
     }
 }

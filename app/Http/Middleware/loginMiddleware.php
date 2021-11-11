@@ -21,7 +21,7 @@ class loginMiddleware
             return $next($request);
         }
         else{
-            echo json_encode(['msg' => 'you are not login']);
+            return response()->json(['msg' => 'you are not login']);
         }
     }
 }
