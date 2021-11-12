@@ -17,7 +17,7 @@ class listViewController extends Controller
     }
     public function postList(Request $request){
         $data = DB::table('users')->where('remember_token',$request->remember_token)->get();
-        if (count($data) > 0){
+        // if (count($data) > 0){
             echo json_encode(['msg' => 'you are login']);
            $posts = DB::table('posts')->where('access','public')->get();
            foreach($posts as $post){
@@ -40,9 +40,9 @@ class listViewController extends Controller
                 }
             
             }
-        }
-        else{
-            echo json_encode(['msg' => 'you are not login']);
-        }
+        // }
+        // else{
+        //     echo json_encode(['msg' => 'you are not login']);
+        // }
     }
 }

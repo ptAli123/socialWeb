@@ -9,15 +9,15 @@ class friendController extends Controller
 {
     public function friend(Request $request){
         $data = DB::table('users')->where('remember_token',$request->remember_token)->get();
-        if (count($data) > 0){
-            echo json_encode(['msg' => 'you are login']);
+        // if (count($data) > 0){
             $friend = new Friend();
             $friend->user1_id = $data[0]->id;
             $friend->user2_id = $request->user2_id;
             $friend->save();
-        }
-        else{
-            echo json_encode(['msg' => 'you are not login']);
-        }
+            return response()->json(['msg' => 'Now you are Friends']);
+        // }
+        // else{
+        //     return response()->json(['msg' => 'you are not login']);
+        // }
     }
 }

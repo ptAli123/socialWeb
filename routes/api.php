@@ -9,6 +9,7 @@ use App\Http\Controllers\postController;
 use App\Http\Controllers\commentController;
 use App\Http\Controllers\friendController;
 use App\Http\Controllers\listViewController;
+use App\Http\Controllers\UserForgetPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,18 +26,25 @@ use App\Http\Controllers\listViewController;
 //     return $request->user();
 // });
 
-Route::post('/sign-up',[signUpController::class,'signUp']);//->middleware('signUp');
-
-
+Route::post('/sign-up',[signUpController::class,'signUp']);
 Route::get('/mail-confirmation/{email}/{varify_token}',[mailConfirmationController::class,'confirmed']);
-Route::post('/login',[loginController::class,'login']);//->middleware('login');
 
-Route::post('/post',[postController::class,'post']);
+Route::post('/login',[loginController::class,'login']);
+Route::post('/logout',[loginController::class,'logout']);
+
+Route::post('/forget-password',[UserForgetPasswordController::class, 'forgetPasword']);
+Route::post('/forget-password-update',[UserForgetPasswordController::class, 'updatePassword']);
+
+
+Route::post('/post',[postController::class,'post'])->middleware('userAuth');
 Route::post('/post-update',[postController::class,'postUpdate']);
 Route::post('/post-delete',[postController::class,'postDelete']);
+
+
 Route::post('/list-view',[listViewController::class,'postList']);
 
 Route::post('/comment',[commentController::class,'comment']);
 Route::post('/comment-update',[commentController::class,'commentUpdate']);
+Route::post('/comment-delete',[commentController::class,'commentDelete']);
 
 Route::post('/friend',[friendController::class,'friend']);

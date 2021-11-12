@@ -37,7 +37,13 @@ class loginController extends Controller
             DB::table('users')->where('email',$request->email)->update(['remember_token' => $this->jwtToken]);
         }
         else{
-            return ["status"=>"your email and password is not Valid"];
+            return response()->json(["status"=>"your email and password is not Valid"]);
         }
+    }
+
+
+    function logout(Request $request){
+        $data = DB::table('users')->where('remember_token',$request->remember_token)->update(['remember_token' => null]);
+        return response()->json(["status"=>"you are successfully logout"]);
     }
 }
