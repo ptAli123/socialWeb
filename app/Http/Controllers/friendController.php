@@ -20,4 +20,10 @@ class friendController extends Controller
         //     return response()->json(['msg' => 'you are not login']);
         // }
     }
+
+    function friendRemove(Request $request){
+        $data = DB::table('users')->where('remember_token',$request->remember_token)->get();
+        DB::table('friends')->where('user1_id',$data[0]->id)->where('user2_id',$request->friend_id)->delete();
+        return response()->json(['msg' => 'Now you are Unfriends']);
+    }
 }

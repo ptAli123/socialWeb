@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Middleware;
-
+use Illuminate\Support\Facades\DB;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -18,6 +18,7 @@ class userAuthMiddleware
     {
         $data = DB::table('users')->where('remember_token',$request->remember_token)->get();
         if (count($data) > 0){
+            echo json_encode(['msg'=>'valid']);
             return $next($request);
         }
         else{
