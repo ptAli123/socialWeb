@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 
 class FriendAuthMiddleware
-{
+{ 
     /**
      * Handle an incoming request.
      *
