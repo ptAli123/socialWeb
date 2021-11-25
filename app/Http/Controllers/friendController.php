@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Friend;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +17,11 @@ class friendController extends Controller
     }
 
     function friendRemove(Request $request){
-        DB::table('friends')->where('user1_id',$request->data->id)->where('user2_id',$request->friend_id)->delete();
+        try{
+            DB::table('friends')->where('user1_id',$request->data->id)->where('user2_id',$request->friend_id)->delete();
+        }catch(Exception $ex){
+            return response()->json(['msg' => $ex->getMessage()]);
+        }
         return response()->json(['msg' => 'Now you are Unfriends']);
     }
 }

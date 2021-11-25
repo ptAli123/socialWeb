@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 use Illuminate\Support\Facades\DB;
 use Closure;
+use Exception;
 use Illuminate\Http\Request;
 
 class userAuthMiddleware
@@ -18,16 +19,17 @@ class userAuthMiddleware
     {
         try{
             $data = DB::table('users')->where('remember_token',$request->remember_token)->first();
-            if ($data){
-                return $next($request->merge(["data" => $data]));
-            }
-            else{
-                return response()->json(['msg' => 'you are not login']);
-            }
         }catch(Exception $ex){
             return response()->json(['msg' => $ex->getMessage()]);
         }
-        
-        
+
+        if ($data){
+            return $next($request->merge(["data" => $data]));
+        }
+        else{
+            return response()->json(['msg' => 'you are not login']);
+        }
+
+
     }
 }

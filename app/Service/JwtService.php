@@ -4,11 +4,12 @@ use Illuminate\Http\Request;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
+use Illuminate\Support\Facades\Config;
+
 class JwtService
 {
     public static function jwtToken(){
-            $key = "malik626";
-
+        $key = Config::get('constant.Key');
             $payload = array(
                 "iss" => "localhost",
                 "aud" => time(),

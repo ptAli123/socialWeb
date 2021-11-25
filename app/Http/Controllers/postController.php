@@ -5,6 +5,8 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\postRequest;
+use App\Http\Resources\PostResources;
+use Exception;
 
 class postController extends Controller
 {
@@ -20,20 +22,33 @@ class postController extends Controller
 
     function postUpdate(postRequest $request){
 
-            
+
         $path = $request->file('file')->store('post');
-        DB::table('posts')->where('user_id',$request->data->id)->where('id',$request->post_id)->update(['file' => $path,'access' => $request->access]);
-        return response()->json(['msg' => 'your have updated post.....']);
+        try{
+            DB::table('posts')->where('user_id',$request->data->id)->where('id',$request->post_id)->update(['file' => $path,'access' => $request->access]);
+        }catch(Exception $ex){
+            return response()->json(['msg' => $ex->getMessage()]);
+        }
+        $Response['message'] = "your have updated post.....";
+        return response()->success($Response,200);
     }
 
     function postDelete(Request $request){
+        try{
             DB::table('comments')->where('post_id',$request->post_id)->delete();
             DB::table('posts')->where('user_id',$request->data->id)->where('id',$request->post_id)->delete();
+        }catch(Exception $ex){
+            return response()->json(['msg' => $ex->getMessage()]);
+        }
             return response()->json(['msg' => 'your have Deleted post.....']);
     }
 
     function checkFriend($user1_id,$user2_id){
-        $data = DB::table('friends')->where('user1_id',$user1_id)->where('user2_id',$user2_id)->get();
+        try{
+            $data = DB::table('friends')->where('user1_id',$user1_id)->where('user2_id',$user2_id)->get();
+        }catch(Exception $ex){
+            return response()->json(['msg' => $ex->getMessage()]);
+        }
         if (count($data) > 0){
             return true;
         }
@@ -43,32 +58,35 @@ class postController extends Controller
     }
 
     function postSearch(Request $request){
+        try{
+            $post = DB::table('posts')->where('id',$request->post_id)->get();
+            if ($post[0]->access == 'public'){
+                    $CArr = array();
+                    $comments = DB::table('comments')->where('post_id',$post[0]->id)->get();
+                    foreach($comments as $comment){
 
-        //$data = DB::table('users')->where('remember_token',$request->remember_token)->get();
-        $post = DB::table('posts')->where('id',$request->post_id)->get();
-        if ($post[0]->access == 'public'){
-                $CArr = array();
-                $comments = DB::table('comments')->where('post_id',$post[0]->id)->get();
-                foreach($comments as $comment){
-                    
-                    $C = array(['file' =>$comment->file, 'comment'=> $comment->comment]);
-                    $CArr[$comment->id] = $C;
-                }
-                $P = array(['file' =>$post[0]->file, 'Access'=> $post[0]->access],$CArr);
-                return response()->json($P);
-        }
-        else{
-            if ($this->checkFriend($request->data->id,$post[0]->user_id)){
-                $CArr = array();
-                $comments = DB::table('comments')->where('post_id',$post[0]->id)->get();
-                foreach($comments as $comment){
-                    
-                    $C = array(['file' =>$comment->file, 'comment'=> $comment->comment]);
-                    $CArr[$comment->id] = $C;
-                }
-                $P = array(['file' =>$post[0]->file, 'Access'=> $post[0]->access],$CArr);
-                return response()->json($P);
+                        $C = array(['file' =>$comment->file, 'comment'=> $comment->comment]);
+                        $CArr[$comment->id] = $C;
+                    }
+                    $P = array(['file' =>$post[0]->file, 'Access'=> $post[0]->access],$CArr);
+                    return response()->json($P);
             }
+            else{
+                if ($this->checkFriend($request->data->id,$post[0]->user_id)){
+                    $CArr = array();
+                    $comments = DB::table('comments')->where('post_id',$post[0]->id)->get();
+                    foreach($comments as $comment){
+
+                        $C = array(['file' =>$comment->file, 'comment'=> $comment->comment]);
+                        $CArr[$comment->id] = $C;
+                    }
+                    $P = array(['file' =>$post[0]->file, 'Access'=> $post[0]->access],$CArr);
+                    return new PostResources($P);
+                }
+            }
+        }
+        catch(Exception $ex){
+            return response()->json(['msg' => $ex->getMessage()]);
         }
     }
 }
