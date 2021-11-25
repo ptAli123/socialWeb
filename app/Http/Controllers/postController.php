@@ -9,50 +9,27 @@ use App\Http\Requests\postRequest;
 class postController extends Controller
 {
     function post(postRequest $request){
-        $request->validated();
-
-        $data = DB::table('users')->where('remember_token',$request->remember_token)->get();
-        // if (count($data) > 0){
-    
-            $path = $request->file('file')->store('post');
-            $post = new Post();
-            $post->file = $path;
-            $post->access = $request->access;
-            $post->user_id = $data[0]->id;
-            $post->save();
-            return response()->json(['msg' => 'your have post.....']);
-        // }
-        // else{
-        //     return response()->json(['msg' => 'you are not login....']);
-        // }
+        $path = $request->file('file')->store('post');
+        $post = new Post();
+        $post->file = $path;
+        $post->access = $request->access;
+        $post->user_id = $request->data->id;
+        $post->save();
+        return response()->json(['msg' => 'you have post.....']);
     }
 
     function postUpdate(postRequest $request){
-        $request->validated();
 
-        $data = DB::table('users')->where('remember_token',$request->remember_token)->get();
-        // if (count($data) > 0){
             
-            $path = $request->file('file')->store('post');
-            DB::table('posts')->where('user_id',$data[0]->id)->where('id',$request->post_id)->update(['file' => $path,'access' => $request->access]);
-            return response()->json(['msg' => 'your have updated post.....']);
-            // }
-        // else{
-        //     echo json_encode(['msg' => 'you are not login']);
-        // }
+        $path = $request->file('file')->store('post');
+        DB::table('posts')->where('user_id',$request->data->id)->where('id',$request->post_id)->update(['file' => $path,'access' => $request->access]);
+        return response()->json(['msg' => 'your have updated post.....']);
     }
 
     function postDelete(Request $request){
-        $data = DB::table('users')->where('remember_token',$request->remember_token)->get();
-        // if (count($data) > 0){
             DB::table('comments')->where('post_id',$request->post_id)->delete();
-            DB::table('posts')->where('user_id',$data[0]->id)->where('id',$request->post_id)->delete();
-            echo $data[0]->id.$request->post_id;
+            DB::table('posts')->where('user_id',$request->data->id)->where('id',$request->post_id)->delete();
             return response()->json(['msg' => 'your have Deleted post.....']);
-            // }
-        // else{
-        //     echo json_encode(['msg' => 'you are not login']);
-        // }
     }
 
     function checkFriend($user1_id,$user2_id){
@@ -67,7 +44,7 @@ class postController extends Controller
 
     function postSearch(Request $request){
 
-        $data = DB::table('users')->where('remember_token',$request->remember_token)->get();
+        //$data = DB::table('users')->where('remember_token',$request->remember_token)->get();
         $post = DB::table('posts')->where('id',$request->post_id)->get();
         if ($post[0]->access == 'public'){
                 $CArr = array();
@@ -81,7 +58,7 @@ class postController extends Controller
                 return response()->json($P);
         }
         else{
-            if ($this->checkFriend($data[0]->id,$post[0]->user_id)){
+            if ($this->checkFriend($request->data->id,$post[0]->user_id)){
                 $CArr = array();
                 $comments = DB::table('comments')->where('post_id',$post[0]->id)->get();
                 foreach($comments as $comment){

@@ -7,7 +7,7 @@
     <title>Mail varification</title>
 </head>
 <body>
-    <h1>{{$details['title']}}</h1>
-    <h4>{{$details['link']}}</h4>
+    <h1>{{$Details['title']}}</h1>
+    <h4>{{$Details['link']}}</h4>
 </body>
 </html>

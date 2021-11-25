@@ -4,9 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class signUpMiddleware
+class EmailAuthMiddleware
 {
     /**
      * Handle an incoming request.
@@ -18,7 +17,7 @@ class signUpMiddleware
     public function handle(Request $request, Closure $next)
     {
         $data = DB::table('users')->where('email',$request->email)->exists();
-        if ($data == true){
+        if ($data != true){
             return $next($request);
         }
         else{

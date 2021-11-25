@@ -16,14 +16,18 @@ class userAuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $data = DB::table('users')->where('remember_token',$request->remember_token)->get();
-        if (count($data) > 0){
-            echo json_encode(['msg'=>'valid']);
-            return $next($request);
+        try{
+            $data = DB::table('users')->where('remember_token',$request->remember_token)->first();
+            if ($data){
+                return $next($request->merge(["data" => $data]));
+            }
+            else{
+                return response()->json(['msg' => 'you are not login']);
+            }
+        }catch(Exception $ex){
+            return response()->json(['msg' => $ex->getMessage()]);
         }
-        else{
-            return response()->json(['msg' => 'you are not login']);
-        }
+        
         
     }
 }

@@ -16,17 +16,12 @@ class listViewController extends Controller
         }
     }
     public function postList(Request $request){
-        $data = DB::table('users')->where('remember_token',$request->remember_token)->get();
-        // if (count($data) > 0){
         $postArr = array();
            $posts = DB::table('posts')->where('access','public')->get();
            foreach($posts as $post){
-                //echo json_encode(['file' =>$post->file, 'Access'=> $post->access]);
                 $CArr = array();
                 $comments = DB::table('comments')->where('post_id',$post->id)->get();
                 foreach($comments as $comment){
-                    //echo json_encode(['file' =>$comment->file, 'comment'=> $comment->comment]);
-                    
                     $C = array(['file' =>$comment->file, 'comment'=> $comment->comment]);
                     $CArr[$comment->id] = $C;
                 }
@@ -37,25 +32,18 @@ class listViewController extends Controller
            // private posts
            $posts = DB::table('posts')->where('access','private')->get();
            foreach($posts as $post){
-                if ($this->checkFriend($data[0]->id,$post->user_id)){
+                if ($this->checkFriend($request->data->id,$post->user_id)){
                     echo json_encode(['file' =>$post->file, 'Access'=> $post->access]);
                     $comments = DB::table('comments')->where('post_id',$post->id)->get();
                     $CArr = array();
                     foreach($comments as $comment){
-                        //echo json_encode(['file' =>$comment->file, 'comment'=> $comment->comment]);
-                        
                         $C = array(['file' =>$comment->file, 'comment'=> $comment->comment]);
                         $CArr[$comment->id] = $C;
                     }
                     $P = array(['file' =>$post->file, 'Access'=> $post->access],$CArr);
                     $postArr[$post->id] = $P;
                 }
-            
             }
             return response()->json($postArr);
-        // }
-        // else{
-        //     echo json_encode(['msg' => 'you are not login']);
-        // }
     }
 }
