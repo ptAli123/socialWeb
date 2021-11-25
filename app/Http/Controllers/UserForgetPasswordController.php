@@ -41,6 +41,6 @@ class UserForgetPasswordController extends Controller
         }catch(Exception $ex){
             return response()->json(['msg' => $ex->getMessage()]);
         }
-        return response()->json(['msg' => 'Your password has Successfully Updated.']);
+        return response()->success();
     }
 }

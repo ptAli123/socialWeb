@@ -17,7 +17,9 @@ class userAuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+
         try{
+
             $data = DB::table('users')->where('remember_token',$request->remember_token)->first();
         }catch(Exception $ex){
             return response()->json(['msg' => $ex->getMessage()]);

@@ -20,7 +20,7 @@ class loginController extends Controller
         if (Hash::check($request->password, $data[0]->password)){
             $jwt = JwtService::jwtToken();
             DB::table('users')->where('email',$request->email)->update(['remember_token' => $jwt]);
-            echo JwtService::encodeJson($jwt);
+            return JwtService::encodeJson($jwt);
         }
         else{
             $Response['message'] = "Wronge Credential";
@@ -35,6 +35,6 @@ class loginController extends Controller
         }catch(Exception $ex){
             return response()->json(['msg' => $ex->getMessage()]);
         }
-        return response()->json(["status"=>"you are successfully logout"]);
+        return response()->success();
     }
 }

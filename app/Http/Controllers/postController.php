@@ -17,7 +17,7 @@ class postController extends Controller
         $post->access = $request->access;
         $post->user_id = $request->data->id;
         $post->save();
-        return response()->json(['msg' => 'you have post.....']);
+        return response()->success();
     }
 
     function postUpdate(postRequest $request){
@@ -29,8 +29,7 @@ class postController extends Controller
         }catch(Exception $ex){
             return response()->json(['msg' => $ex->getMessage()]);
         }
-        $Response['message'] = "your have updated post.....";
-        return response()->success($Response,200);
+        return response()->success();
     }
 
     function postDelete(Request $request){
@@ -40,7 +39,7 @@ class postController extends Controller
         }catch(Exception $ex){
             return response()->json(['msg' => $ex->getMessage()]);
         }
-            return response()->json(['msg' => 'your have Deleted post.....']);
+        return response()->success();
     }
 
     function checkFriend($user1_id,$user2_id){

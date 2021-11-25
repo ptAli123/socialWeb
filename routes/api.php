@@ -10,6 +10,7 @@ use App\Http\Controllers\commentController;
 use App\Http\Controllers\friendController;
 use App\Http\Controllers\listViewController;
 use App\Http\Controllers\UserForgetPasswordController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,8 @@ Route::get('/mail-confirmation/{email}/{varify_token}',[mailConfirmationControll
 
 Route::post('/login',[loginController::class,'login']);
 Route::post('/logout',[loginController::class,'logout'])->middleware("userAuth");
+
+Route::post('/user-update',[UserController::class,'userUpdate'])->middleware("userAuth");
 
 Route::post('/forget-password',[UserForgetPasswordController::class, 'forgetPasword'])->middleware('emailAuth');
 Route::post('/forget-password-update',[UserForgetPasswordController::class, 'updatePassword']);

@@ -17,7 +17,7 @@ class commentController extends Controller
         $comment->user_id = $request->data->id;
         $comment->post_id = $request->post_id;
         $comment->save();
-        return response()->json(['msg' => 'you have comment....']);
+        return response()->success();
     }
 
     function commentUpdate(commentRequest $request){
@@ -27,7 +27,7 @@ class commentController extends Controller
         }catch(Exception $ex){
             return response()->json(['msg' => $ex->getMessage()]);
         }
-        return response()->json(['msg' => 'you have updated your comment.']);
+        return response()->success();
     }
 
     function commentDelete(Request $request){
@@ -37,6 +37,6 @@ class commentController extends Controller
         }catch(Exception $ex){
             return response()->json(['msg' => $ex->getMessage()]);
         }
-        return response()->json(['msg' => 'you have successfully Delete your Comment']);
+        return response()->success();
     }
 }

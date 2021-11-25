@@ -13,7 +13,7 @@ class friendController extends Controller
         $friend->user1_id = $request->data->id;
         $friend->user2_id = $request->user2_id;
         $friend->save();
-        return response()->json(['msg' => 'Now you are Friends']);
+        return response()->success();
     }
 
     function friendRemove(Request $request){
@@ -22,6 +22,6 @@ class friendController extends Controller
         }catch(Exception $ex){
             return response()->json(['msg' => $ex->getMessage()]);
         }
-        return response()->json(['msg' => 'Now you are Unfriends']);
+        return response()->success();
     }
 }
